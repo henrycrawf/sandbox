@@ -7,4 +7,4 @@ Your environment of Looker comes pre-loaded with a sample database connection, d
 
 
 Inline-style:
-![alt text](https://static1.squarespace.com/static/5a27fde0d74cff1ed0580900/t/5a2818a69140b7da0f52ac1b/1512577191841/redkite.png?format=2500w "RedKite Logo")
+![alt text](https://static1.squarespace.com/static/5a27fde0d74cff1ed0580900/t/5a2818a69140b7da0f52ac1b/1512577191841/redkite.png "RedKite Logo")
