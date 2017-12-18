@@ -9,6 +9,7 @@ view: users_fact {
        FROM orders
        GROUP BY user_id
        ;;
+    indexes: ["user_id"]  #Builds an index on the PDT for faster joins
     sql_trigger_value: SELECT_CURDATE() ;; #refreshes table at midnight. Could cause errors around etl load time
    }
 
