@@ -65,33 +65,33 @@ view: users_fact {
     timeframes: [date, week, month, year]
     sql: ${TABLE}.first_purchase ;;
   }
-  dimension: 30day_orders {
-    type: string
+  measure: 30day_orders {
+    type: sum
     sql: ${TABLE}.30day_orders ;;
   }
 
-  dimension: 60day_orders {
-    type: string
+  measure: 60day_orders {
+    type: sum
     sql: ${TABLE}.60day_orders ;;
   }
 
-  dimension: 90day_orders {
-    type: string
+  measure: 90day_orders {
+    type: sum
     sql: ${TABLE}.90day_orders ;;
   }
 
-  dimension: 120day_orders {
-    type: string
+  measure: 120day_orders {
+    type: sum
     sql: ${TABLE}.120day_orders ;;
   }
 
-  dimension: 150day_orders {
-    type: string
+  measure: 150day_orders {
+    type: sum
     sql: ${TABLE}.150day_orders ;;
   }
 
-  dimension: 180day_orders {
-    type: string
+  measure: 180day_orders {
+    type: sum
     sql: ${TABLE}.180day_orders ;;
   }
 
