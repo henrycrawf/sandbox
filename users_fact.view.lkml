@@ -13,9 +13,9 @@ view: users_fact {
     sql_trigger_value: SELECT_CURDATE() ;; #refreshes table at midnight. Could cause errors around etl load time
    }
 
-   # Define your dimensions and measures here, like this:
    dimension: user_id {
      description: "Unique ID for each user that has ordered"
+     hidden: yes
      type: number
      sql: ${TABLE}.user_id ;;
    }
@@ -25,6 +25,13 @@ view: users_fact {
      type: number
      sql: ${TABLE}.lifetime_orders ;;
    }
+
+  dimension: lifetime_number_of_orders_tier {
+    type: tier
+    style: integer
+    tiers: [0, 1, 2, 3, 5, 10]
+    sql: ${lifetime_orders} ;;
+  }
 
    dimension_group: last_purchase{
      description: "The date when each user last ordered"
@@ -38,6 +45,13 @@ view: users_fact {
     type: time
     timeframes: [date, week, month, year]
     sql: ${TABLE}.first_purchase ;;
+  }
+
+  measure: average_lifetime_orders {
+    type: average
+    value_format_name: decimal_1
+    drill_fields: [lifetime_orders, users.count]
+    sql: ${lifetime_orders} ;;
   }
 
    measure: total_lifetime_orders {
