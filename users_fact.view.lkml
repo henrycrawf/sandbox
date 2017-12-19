@@ -1,14 +1,33 @@
 view: users_fact {
 
    derived_table: {
-     sql: SELECT
-         user_id as user_id
-         , COUNT(*) as lifetime_orders
-         , MIN(orders.created_at) as first_purchase
-         , MAX(orders.created_at) as last_purchase
-       FROM orders
-       GROUP BY user_id
-       ;;
+    sql: SELECT
+    o.user_id
+    ,MIN(a.lifetime_orders) as lifetime_orders
+    ,MIN(a.first_purchase) as first_purchase
+    ,MIN(a.last_purchase) as last_purchase
+    ,COUNT(DISTINCT(CASE WHEN o.created_at <= a.first_purchase + INTERVAL 30  DAY THEN o.id ELSE null END)) AS 30day_orders
+    ,COUNT(DISTINCT(CASE WHEN o.created_at <= a.first_purchase + INTERVAL 60  DAY THEN o.id ELSE null END)) AS 60day_orders
+    ,COUNT(DISTINCT(CASE WHEN o.created_at <= a.first_purchase + INTERVAL 90  DAY THEN o.id ELSE null END)) AS 90day_orders
+    ,COUNT(DISTINCT(CASE WHEN o.created_at <= a.first_purchase + INTERVAL 120 DAY THEN o.id ELSE null END)) AS 120day_orders
+    ,COUNT(DISTINCT(CASE WHEN o.created_at <= a.first_purchase + INTERVAL 150 DAY THEN o.id ELSE null END)) AS 150day_orders
+    ,COUNT(DISTINCT(CASE WHEN o.created_at <= a.first_purchase + INTERVAL 180 DAY THEN o.id ELSE null END)) AS 180day_orders
+
+    FROM orders o
+    INNER JOIN
+    (
+    SELECT
+    user_id as user_id
+    , COUNT(*) as lifetime_orders
+    , MIN(orders.created_at) as first_purchase
+    , MAX(orders.created_at) as last_purchase
+    FROM orders
+    WHERE user_id < 10
+    GROUP BY user_id
+    ) a on a.user_id = o.user_id
+
+    GROUP BY o.user_id
+    ;;
     indexes: ["user_id"]  #Builds an index on the PDT for faster joins
     sql_trigger_value: SELECT_CURDATE() ;; #refreshes table at midnight. Could cause errors around etl load time
    }
@@ -45,6 +64,35 @@ view: users_fact {
     type: time
     timeframes: [date, week, month, year]
     sql: ${TABLE}.first_purchase ;;
+  }
+  dimension: 30day_orders {
+    type: string
+    sql: ${TABLE}.30day_orders ;;
+  }
+
+  dimension: 60day_orders {
+    type: string
+    sql: ${TABLE}.60day_orders ;;
+  }
+
+  dimension: 90day_orders {
+    type: string
+    sql: ${TABLE}.90day_orders ;;
+  }
+
+  dimension: 120day_orders {
+    type: string
+    sql: ${TABLE}.120day_orders ;;
+  }
+
+  dimension: 150day_orders {
+    type: string
+    sql: ${TABLE}.150day_orders ;;
+  }
+
+  dimension: 180day_orders {
+    type: string
+    sql: ${TABLE}.180day_orders ;;
   }
 
   measure: average_lifetime_orders {
